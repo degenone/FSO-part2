@@ -12,10 +12,17 @@ const App = () => {
 
     const addPerson = (e) => {
         e.preventDefault();
+        if (newName.trim().length === 0) return;
         const personObj = { name: newName };
+        if (personExists(personObj.name)) {
+            alert(`"${personObj.name}" is already in the phonebook!`);
+            return;
+        }
         setPersons([...persons, personObj]);
         setNewName('');
     };
+
+    const  personExists = name => persons.filter(person => person.name === name).length !== 0;
 
     return (
         <div>
