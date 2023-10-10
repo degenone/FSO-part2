@@ -52,31 +52,44 @@ const App = () => {
         });
     };
 
+    const updatePerson = (personObj) => {
+        const confirm = window.confirm(
+            `Update the phone number for "${personObj.name}"?`
+        );
+        if (!confirm) return;
+        const person = persons.find(
+            (p) => p.name.toLowerCase() === personObj.name.toLowerCase()
+        );
+        const updatedObj = { ...person, number: personObj.number };
+        personService.update(updatedObj).then((updatedPerson) => {
+            setPersons(
+                persons.map((p) =>
+                    p.id === updatedPerson.id ? updatedPerson : p
+                )
+            );
+            setNewName('');
+            setNewNumber('');
+        });
+    };
+
     const deletePerson = (id) => {
         const person = persons.find((p) => p.id === id);
-        if (
-            window.confirm(`Are you sure you want to delete '${person.name}'?`)
-        ) {
-            personService
-                .delPerson(id)
-                .then(() => {
-                    setPersons(persons.filter((p) => p.id !== id));
-                })
-                .catch(() => {
-                    alert(`Person '${person.name}' was already deleted.`);
-                    setPersons(persons.filter((p) => p.id !== id));
-                });
-        }
+        const confirm = window.confirm(
+            `Are you sure you want to delete "${person.name}"?`
+        );
+        if (!confirm) return;
+        personService
+            .delPerson(id)
+            .then(() => {
+                setPersons(persons.filter((p) => p.id !== id));
+            })
+            .catch(() => {
+                alert(`Person "${person.name}" was already deleted.`);
+                setPersons(persons.filter((p) => p.id !== id));
+            });
     };
 
     const personExists = (newPerson) => {
-        if (
-            persons.filter((person) => person.name === newPerson.name)
-                .length !== 0
-        ) {
-            alert(`"${newPerson.name}" is already in the phonebook!`);
-            return true;
-        }
         const regex = /[\s-]/g;
         const number = newPerson.number.replaceAll(regex, '');
         if (
@@ -85,6 +98,15 @@ const App = () => {
             ).length !== 0
         ) {
             alert(`"${newPerson.number}" is already in the phonebook!`);
+            return true;
+        }
+        if (
+            persons.filter(
+                (person) =>
+                    person.name.toLowerCase() === newPerson.name.toLowerCase()
+            ).length !== 0
+        ) {
+            updatePerson(newPerson);
             return true;
         }
         return false;

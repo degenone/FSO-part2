@@ -12,6 +12,11 @@ const create = (newObj) => {
     return req.then((resp) => resp.data);
 };
 
+const update = (newObj) => {
+    const req = axios.put(`${BASE_URL}/${newObj.id}`, newObj);
+    return req.then((resp) => resp.data);
+};
+
 const delPerson = (id) => {
     return axios.delete(`${BASE_URL}/${id}`);
 };
@@ -19,5 +24,6 @@ const delPerson = (id) => {
 export default {
     getAll,
     create,
+    update,
     delPerson,
 };
