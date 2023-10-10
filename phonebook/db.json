@@ -1,0 +1,29 @@
+{
+    "persons": [
+        {
+            "name": "Arto Hellas",
+            "number": "040-123-456",
+            "id": 1
+        },
+        {
+            "name": "Ada Lovelace",
+            "number": "394 453 2523",
+            "id": 2
+        },
+        {
+            "name": "Dan Abramov",
+            "number": "124-323-4345",
+            "id": 3
+        },
+        {
+            "name": "Mary Poppendieck",
+            "number": "392 364 2122",
+            "id": 4
+        },
+        {
+            "name": "Tero Kilpeläinen",
+            "number": "040 987 6543",
+            "id": 5
+        }
+    ]
+}
