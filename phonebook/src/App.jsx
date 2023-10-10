@@ -4,6 +4,8 @@ import Filter from './components/Filter';
 import Form from './components/Form';
 import axios from 'axios';
 
+const BASE_URL = 'http://localhost:3001/persons';
+
 const App = () => {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
@@ -17,9 +19,7 @@ const App = () => {
               );
 
     useEffect(() => {
-        axios
-            .get('http://localhost:3001/persons')
-            .then((resp) => setPersons(resp.data));
+        axios.get(BASE_URL).then((resp) => setPersons(resp.data));
     }, []);
 
     const handleNameChange = (e) => {
@@ -46,9 +46,11 @@ const App = () => {
             id: persons.length + 1,
         };
         if (personExists(personObj)) return;
-        setPersons([...persons, personObj]);
-        setNewName('');
-        setNewNumber('');
+        axios.post(BASE_URL, personObj).then((resp) => {
+            setPersons([...persons, resp.data]);
+            setNewName('');
+            setNewNumber('');
+        });
     };
 
     const personExists = (newPerson) => {
