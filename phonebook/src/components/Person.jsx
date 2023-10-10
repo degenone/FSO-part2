@@ -1,8 +1,11 @@
 const Person = (props) => {
-    const { person } = props;
+    const { person, deleteHandler } = props;
     return (
         <p>
-            {person.name} ☎️ {person.number}
+            {person.name} ☎️ {person.number}{' '}
+            <button type='button' onClick={() => deleteHandler(person.id)}>
+                delete
+            </button>
         </p>
     );
 };

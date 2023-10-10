@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import Persons from './components/Persons';
 import Filter from './components/Filter';
 import Form from './components/Form';
-import axios from 'axios';
-
-const BASE_URL = 'http://localhost:3001/persons';
+import personService from './services/Persons';
 
 const App = () => {
     const [persons, setPersons] = useState([]);
@@ -19,7 +17,9 @@ const App = () => {
               );
 
     useEffect(() => {
-        axios.get(BASE_URL).then((resp) => setPersons(resp.data));
+        personService
+            .getAll()
+            .then((initialPersons) => setPersons(initialPersons));
     }, []);
 
     const handleNameChange = (e) => {
@@ -43,14 +43,30 @@ const App = () => {
         const personObj = {
             name: newName,
             number: newNumber,
-            id: persons.length + 1,
         };
         if (personExists(personObj)) return;
-        axios.post(BASE_URL, personObj).then((resp) => {
-            setPersons([...persons, resp.data]);
+        personService.create(personObj).then((addedPerson) => {
+            setPersons([...persons, addedPerson]);
             setNewName('');
             setNewNumber('');
         });
+    };
+
+    const deletePerson = (id) => {
+        const person = persons.find((p) => p.id === id);
+        if (
+            window.confirm(`Are you sure you want to delete '${person.name}'?`)
+        ) {
+            personService
+                .delPerson(id)
+                .then(() => {
+                    setPersons(persons.filter((p) => p.id !== id));
+                })
+                .catch(() => {
+                    alert(`Person '${person.name}' was already deleted.`);
+                    setPersons(persons.filter((p) => p.id !== id));
+                });
+        }
     };
 
     const personExists = (newPerson) => {
@@ -87,7 +103,7 @@ const App = () => {
                 submitHandler={addPerson}
             />
             <h2>Numbers</h2>
-            <Persons persons={personsToList} />
+            <Persons persons={personsToList} deleteHandler={deletePerson} />
         </div>
     );
 };
