@@ -51,7 +51,10 @@ const App = () => {
             setPersons([...persons, addedPerson]);
             setNewName('');
             setNewNumber('');
-            setNotificatoin(`Added ${addedPerson.name} to the phonebook.`);
+            setNotificatoin({
+                text: `Added ${addedPerson.name} to the phonebook.`,
+                isError: false,
+            });
             resetNotification();
         });
     };
@@ -73,9 +76,10 @@ const App = () => {
             );
             setNewName('');
             setNewNumber('');
-            setNotificatoin(
-                `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}.`
-            );
+            setNotificatoin({
+                text: `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}.`,
+                isError: false,
+            });
             resetNotification();
         });
     };
@@ -90,14 +94,18 @@ const App = () => {
         personService
             .delPerson(id)
             .then(() => {
-                setNotificatoin(
-                    `Person "${name}" was deleted from the phonebook.`
-                );
+                setNotificatoin({
+                    text: `Person "${name}" was deleted from the phonebook.`,
+                    isError: false,
+                });
                 resetNotification();
                 setPersons(persons.filter((p) => p.id !== id));
             })
             .catch(() => {
-                setNotificatoin(`Person "${name}" was already deleted.`);
+                setNotificatoin({
+                    text: `Person "${name}" was already deleted.`,
+                    isError: true,
+                });
                 resetNotification();
                 setPersons(persons.filter((p) => p.id !== id));
             });
