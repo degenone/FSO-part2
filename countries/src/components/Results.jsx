@@ -1,5 +1,5 @@
 const Results = (props) => {
-    const { results } = props;
+    const { results, handler } = props;
     if (results.length > 10) {
         return <p>Too many matches for this search. Please specify more.</p>;
     }
@@ -8,8 +8,13 @@ const Results = (props) => {
     }
     return (
         <ul>
-            {results.map((c) => (
-                <li key={c}>{c}</li>
+            {results.map((country) => (
+                <li key={country}>
+                    {country}{' '}
+                    <button type='button' onClick={() => handler(country)}>
+                        show
+                    </button>
+                </li>
             ))}
         </ul>
     );

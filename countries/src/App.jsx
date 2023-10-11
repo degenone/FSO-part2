@@ -45,7 +45,7 @@ const App = () => {
             <Search value={searchValue} handler={setSearchValue} />
             {searchValue !== '' &&
                 ((country && <Country country={country} />) || (
-                    <Results results={searchResult} />
+                    <Results results={searchResult} handler={setSearchValue} />
                 ))}
         </div>
     );
