@@ -3,12 +3,14 @@ import Persons from './components/Persons';
 import Filter from './components/Filter';
 import Form from './components/Form';
 import personService from './services/Persons';
+import Notification from './components/Notificatoin';
 
 const App = () => {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filterBy, setFilterBy] = useState('');
+    const [notificatoin, setNotificatoin] = useState(null);
     const personsToList =
         filterBy.trim().length === 0
             ? persons
@@ -49,6 +51,8 @@ const App = () => {
             setPersons([...persons, addedPerson]);
             setNewName('');
             setNewNumber('');
+            setNotificatoin(`Added ${addedPerson.name} to the phonebook.`);
+            resetNotification();
         });
     };
 
@@ -69,22 +73,32 @@ const App = () => {
             );
             setNewName('');
             setNewNumber('');
+            setNotificatoin(
+                `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}.`
+            );
+            resetNotification();
         });
     };
 
     const deletePerson = (id) => {
         const person = persons.find((p) => p.id === id);
+        const name = person.name;
         const confirm = window.confirm(
-            `Are you sure you want to delete "${person.name}"?`
+            `Are you sure you want to delete "${name}"?`
         );
         if (!confirm) return;
         personService
             .delPerson(id)
             .then(() => {
+                setNotificatoin(
+                    `Person "${name}" was deleted from the phonebook.`
+                );
+                resetNotification();
                 setPersons(persons.filter((p) => p.id !== id));
             })
             .catch(() => {
-                alert(`Person "${person.name}" was already deleted.`);
+                setNotificatoin(`Person "${name}" was already deleted.`);
+                resetNotification();
                 setPersons(persons.filter((p) => p.id !== id));
             });
     };
@@ -112,9 +126,13 @@ const App = () => {
         return false;
     };
 
+    const resetNotification = () =>
+        setTimeout(() => setNotificatoin(null), 5000);
+
     return (
         <div>
             <h1>Phonebook</h1>
+            {notificatoin !== null && <Notification message={notificatoin} />}
             <Filter value={filterBy} handler={handleFilterChange} />
             <h2>Add a new person</h2>
             <Form
