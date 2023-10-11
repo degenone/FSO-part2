@@ -6,3 +6,7 @@ img {
 .flag {
     width: 20rem;
 }
+
+.searchContainer > label {
+    margin-inline-end: 0.5rem;
+}
