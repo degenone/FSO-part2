@@ -17,6 +17,7 @@ const Form = (props) => {
                     placeholder='Add name'
                     value={nameValue}
                     onChange={nameHandler}
+                    required
                 />
             </div>
             <div>
@@ -32,6 +33,7 @@ const Form = (props) => {
                     title='Phone number e.g. 123 123 1234 or 123-123-1234'
                     value={numberValue}
                     onChange={numberHandler}
+                    required
                 />
             </div>
             <div>
