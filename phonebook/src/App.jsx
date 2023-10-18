@@ -47,16 +47,18 @@ const App = () => {
             number: newNumber,
         };
         if (personExists(personObj)) return;
-        personService.create(personObj).then((addedPerson) => {
-            setPersons([...persons, addedPerson]);
-            setNewName('');
-            setNewNumber('');
-            setNotificatoin({
-                text: `Added ${addedPerson.name} to the phonebook.`,
-                isError: false,
+        personService
+            .create(personObj)
+            .then((addedPerson) => {
+                setPersons([...persons, addedPerson]);
+                setNewName('');
+                setNewNumber('');
+                showNotificatoin(`Added ${addedPerson.name} to the phonebook.`);
+            })
+            .catch((e) => {
+                console.log(e);
+                showNotificatoin(e.response.data.error, true);
             });
-            resetNotification();
-        });
     };
 
     const updatePerson = (personObj) => {
@@ -76,11 +78,9 @@ const App = () => {
             );
             setNewName('');
             setNewNumber('');
-            setNotificatoin({
-                text: `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}.`,
-                isError: false,
-            });
-            resetNotification();
+            showNotificatoin(
+                `Updated ${updatedPerson.name}'s number to ${updatedPerson.number}.`
+            );
         });
     };
 
@@ -94,19 +94,13 @@ const App = () => {
         personService
             .delPerson(id)
             .then(() => {
-                setNotificatoin({
-                    text: `Person "${name}" was deleted from the phonebook.`,
-                    isError: false,
-                });
-                resetNotification();
+                showNotificatoin(
+                    `Person "${name}" was deleted from the phonebook.`
+                );
                 setPersons(persons.filter((p) => p.id !== id));
             })
             .catch(() => {
-                setNotificatoin({
-                    text: `Person "${name}" was already deleted.`,
-                    isError: true,
-                });
-                resetNotification();
+                showNotificatoin(`Person "${name}" was already deleted.`, true);
                 setPersons(persons.filter((p) => p.id !== id));
             });
     };
@@ -134,8 +128,13 @@ const App = () => {
         return false;
     };
 
-    const resetNotification = () =>
+    const showNotificatoin = (text, isError = false) => {
+        setNotificatoin({
+            text: text,
+            isError: isError,
+        });
         setTimeout(() => setNotificatoin(null), 5000);
+    };
 
     return (
         <div>
